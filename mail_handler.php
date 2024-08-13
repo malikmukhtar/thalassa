@@ -7,7 +7,7 @@ require 'phpmailer/PHPMailerAutoload.php';
     $mail->SMTPAuth = true;
     $mail->SMTPSecure = 'ssl';
     $mail->Port = 465;
-    $mail->Username = 'support@logistica.globalconsultingpk.com';
+    $mail->Username = 'support@Thalassa.globalconsultingpk.com';
     $mail->Password = 'DY.OUUC8_sS~';
     
     $name=$_POST['name'];
@@ -19,7 +19,7 @@ require 'phpmailer/PHPMailerAutoload.php';
     $mail->setFrom($email, $name);
     $mail->addReplyTo($email, $name);
     $mail->Subject = $subject;
-    $mail->addAddress('support@logistica.globalconsultingpk.com', 'Logistic');
+    $mail->addAddress('support@Thalassa.globalconsultingpk.com', 'Logistic');
     
     $message = $message;
     
