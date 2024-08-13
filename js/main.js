@@ -151,59 +151,89 @@
 
 
     document.addEventListener("DOMContentLoaded", function() {
-        // Replace 'https://api.example.com/data' with the actual API endpoint you want to call
         const apiUrl = 'https://newsdata.io/api/1/news?apikey=pub_49691f27437ba23404a23ee008aebfd48a895&q=CBN%20AND%20Dollar&country=ng';
+        const cacheKey = 'apiDataCache';
+        const cacheExpiration = 3 * 60 * 60 * 1000; // Cache expiration time in milliseconds (e.g., 1 hour)
     
         // Function to make the API call
         function fetchData() {
-            fetch(apiUrl)
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok ' + response.statusText);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("malikaaaaa")
-                    // Loop through the result and display each item
-                    displayResults(data);
-                })
-                .catch(error => {
-                    console.error('There was a problem with the fetch operation:', error);
-                    document.getElementById('results').textContent = 'Error fetching data.';
-                });
+            const cachedData = getCachedData();
+    
+            if (cachedData) {
+                displayResults(cachedData);
+            } else {
+                fetch(apiUrl)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok ' + response.statusText);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        // Cache the data
+                        setCachedData(data);
+                        // Display the result
+                        displayResults(data);
+                    })
+                    .catch(error => {
+                        console.error('There was a problem with the fetch operation:', error);
+                        document.getElementById('results').textContent = 'Error fetching data.';
+                    });
+            }
+        }
+    
+        // Function to get cached data
+        function getCachedData() {
+            const cached = localStorage.getItem(cacheKey);
+            if (cached) {
+                const cachedObj = JSON.parse(cached);
+                const now = new Date().getTime();
+                // Check if cache has expired
+                if (now - cachedObj.timestamp < cacheExpiration) {
+                    return cachedObj.data;
+                } else {
+                    // If cache expired, remove it
+                    localStorage.removeItem(cacheKey);
+                }
+            }
+            return null;
+        }
+    
+        // Function to set cached data
+        function setCachedData(data) {
+            const cacheObj = {
+                timestamp: new Date().getTime(),
+                data: data
+            };
+            localStorage.setItem(cacheKey, JSON.stringify(cacheObj));
         }
     
         // Function to display the results
         function displayResults(data) {
             const resultsDiv = document.getElementById('results');
-            // Clear any existing content
             resultsDiv.innerHTML = '';
     
-            // Assuming data is an array of objects
             data.results.forEach(item => {
-                console.log("malikaaaaa2222")
                 const itemDiv = document.createElement('div');
                 itemDiv.classList.add('col-lg-4');
                 itemDiv.classList.add('wow');
                 itemDiv.classList.add('slideInUp');
-    
-                // Customize the content based on your API response structure
+
                 itemDiv.innerHTML = `
-                    <div class="blog-img position-relative overflow-hidden">
-                            <a href="blog-details.html"> <img class="img-fluid" src="${item.image_url}" alt=""></a>
+                <div class="blog-img position-relative overflow-hidden">
+                        <a href="blog-details.html"> <img class="img-fluid" src="${item.image_url}" alt=""></a>
+                </div>
+                <div class="p-4 ps-0">
+                    <div class="d-flex mb-3">
+                        <small class="me-3"><i class="far fa-user text-primary me-2"></i>${item.source_id}</small>
+                        <small><i class="far fa-calendar-alt text-primary me-2"></i>${item.pubDate}</small>
                     </div>
-                    <div class="p-4 ps-0">
-                        <div class="d-flex mb-3">
-                            <small class="me-3"><i class="far fa-user text-primary me-2"></i>${item.source_id}</small>
-                            <small><i class="far fa-calendar-alt text-primary me-2"></i>${item.pubDate}</small>
-                        </div>
-                        <a class=" text-primary" href="${item.source_url}" target="_blank"><h4 class="mb-3">${item.title}</h4></a>
-                        
-                        <a class="text-uppercase text-primary" href="${item.source_url}" target="_blank">Read More <i class="bi bi-arrow-right"></i></a>
-                    </div>
-                `;
-    
+                    <a class=" text-primary" href="${item.source_url}" target="_blank"><h4 class="mb-3">${item.title}</h4></a>
+                    
+                    <a class="text-uppercase text-primary" href="${item.source_url}" target="_blank">Read More <i class="bi bi-arrow-right"></i></a>
+                </div>
+            `;
+
                 resultsDiv.appendChild(itemDiv);
             });
         }
@@ -211,6 +241,10 @@
         // Call the fetchData function on page load
         fetchData();
     });
+    
+
+
+   
     
     
 
