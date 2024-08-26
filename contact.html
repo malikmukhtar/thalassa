@@ -29,6 +29,16 @@
 
     <!-- Template Stylesheet -->
     <link href="css/style.css" rel="stylesheet">
+    <script type="text/javascript"
+        src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js">
+</script>
+<script type="text/javascript">
+   (function(){
+      emailjs.init({
+        publicKey: "4e7hqWR6C--uxZjH1",
+      });
+   })();
+</script>
 </head>
 
 <body>
@@ -104,7 +114,7 @@
                     <h1 class="mb-4">Contact For Any Query</h1>
                     <p class="mb-4">Whether you need a reliable logistics partner or are looking to optimize your supply chain, ThalassaTransport and Logistics is here to help. Contact us today to learn more about how we can support your business.</p>
                     <div class="bg-light p-4 ps-0">
-                        <form action="mail_handler.php" method="post" role="form" class="php-email-form">
+                        <!-- <form action="mail_handler.php" method="post" role="form" class="php-email-form"> -->
                             <div class="row g-3">
                                 <div class="col-md-6">
                                     <div class="form-floating">
@@ -118,12 +128,12 @@
                                         <label for="email">Your Email</label>
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <!-- <div class="col-12">
                                     <div class="form-floating">
                                         <input type="text" class="form-control" id="subject" name="subject" placeholder="Subject">
                                         <label for="subject">Subject</label>
                                     </div>
-                                </div>
+                                </div> -->
                                 <div class="col-12">
                                     <div class="form-floating">
                                         <textarea class="form-control" placeholder="Leave a message here" id="message" name="message" style="height: 100px"></textarea>
@@ -131,10 +141,10 @@
                                     </div>
                                 </div>
                                 <div class="col-12">
-                                    <button class="btn btn-primary w-100 py-3" name="submit" type="submit">Send Message</button>
+                                    <button class="btn btn-primary w-100 py-3" name="submit" type="submit" onclick="sendMail()">Send Message</button>
                                 </div>
                             </div>
-                        </form>
+                        <!-- </form> -->
                     </div>
                 </div>
                 <div class="col-md-6 pe-lg-0 wow fadeInRight" data-wow-delay="0.1s">
